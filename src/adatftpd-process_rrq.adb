@@ -24,7 +24,6 @@ begin
 
    if File_Exists and then Mode_String = "octet"
       --  only support binary file transfers
-
      and then Ada.Directories.Size (Name => Filename_String) > 0
    then
 
@@ -79,9 +78,9 @@ begin
       Send_TFTP_Error
         (From_Server => Server,
          To_Client   => From_Client,
-         Error_Data  =>
-           (if not File_Exists then From_U16_To_Bytes (16#0001#)
-            else From_U16_To_Bytes (16#0004#)));
+         Error       =>
+           (if not File_Exists then FILE_NOT_FOUND
+            else ILLEGAL_OPERATION));
 
    end if;
 

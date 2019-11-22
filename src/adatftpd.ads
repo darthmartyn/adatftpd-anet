@@ -15,7 +15,7 @@ private
 
    package Byte_IO is new Ada.Direct_IO
      (Element_Type => Ada.Streams.Stream_Element);
-   --
+   --   Used to read and write bytes from files
 
    type Connection_Type is record
       Client                : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
@@ -29,16 +29,25 @@ private
 
    package Connection_Store is new
      Ada.Containers.Doubly_Linked_Lists (Connection_Type, "=");
-
-   use Connection_Store;
-
-   --  The following constant values comes from the TFTP protocol (revision 2)
-   --  https://www.ietf.org/rfc/rfc1350.txt
+   --  It is useful to keep track of current transfers because
+   --  datagrams can arrive from different clients.  Elements are added
+   --  to this list upon receipt of a valid RRQ datagram and removed
+   --- upon successful file transmission,  or an error is detected.
 
    TFTP_RRQ   : constant Interfaces.Unsigned_16 := 16#0001#;
+   TFTP_WRQ   : constant Interfaces.Unsigned_16 := 16#0002#;
    TFTP_DATA  : constant Interfaces.Unsigned_16 := 16#0003#;
    TFTP_ACK   : constant Interfaces.Unsigned_16 := 16#0004#;
    TFTP_ERROR : constant Interfaces.Unsigned_16 := 16#0005#;
+
+   TFTP_FILE_NOT_FOUND  : constant Interfaces.Unsigned_16 := 16#0001#;
+   TFTP_ILLEGAL_OP      : constant Interfaces.Unsigned_16 := 16#0004#;
+   TFTP_UNKNOWN_XFER_ID : constant Interfaces.Unsigned_16 := 16#0004#;
+   --  The above constant values comes from the TFTP protocol (revision 2)
+   --  https://www.ietf.org/rfc/rfc1350.txt
+
+   type TFTP_Error_Type is
+     (FILE_NOT_FOUND, ILLEGAL_OPERATION, UNKNOWN_TRANSFER_ID);
 
    --  Private Packages
 
@@ -49,8 +58,9 @@ private
 
    --  Private use clauses
 
-   use Interfaces;
    use Byte_IO;
+   use Interfaces;
+   use Connection_Store;
 
    --  Private Varaibles
 
@@ -108,7 +118,7 @@ private
    procedure Send_TFTP_Error
      (From_Server : Anet.Sockets.Inet.UDPv4_Socket_Type;
       To_Client   : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
-      Error_Data  : Ada.Streams.Stream_Element_Array);
+      Error       : TFTP_Error_Type);
 
    procedure Process_ACK
      (To_Server   : Anet.Sockets.Inet.UDPv4_Socket_Type;

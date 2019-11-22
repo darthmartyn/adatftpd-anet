@@ -1,5 +1,7 @@
 package body adatftpd is
 
+   --  Private Subprogram Implementations
+
    function Find_String_In_Bytes
      (Data : Ada.Streams.Stream_Element_Array) return String is separate;
 
@@ -29,7 +31,7 @@ package body adatftpd is
    procedure Send_TFTP_Error
      (From_Server : Anet.Sockets.Inet.UDPv4_Socket_Type;
       To_Client   : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
-      Error_Data  : Ada.Streams.Stream_Element_Array) is separate;
+      Error       : TFTP_Error_Type) is separate;
 
    procedure Process_ACK
      (To_Server   : Anet.Sockets.Inet.UDPv4_Socket_Type;
@@ -52,13 +54,19 @@ package body adatftpd is
    begin
 
       Server.Init;
+      --  Initialize the IPv4/UDP socket.
 
       Server.Bind
         (Port       => 69,
          Reuse_Addr => True);
+      --  Bind the IPv4 socket to the TFTP port as specified by
+      --  TFTP protocol (revision 2)
+      --  https://www.ietf.org/rfc/rfc1350.txt
 
       Receiver.Listen
         (Callback => Receive_Datagram'Access);
+      --  Start listening for data on TFTP port. The given callback is
+      --  asynchronously executed upon data reception.
 
    end Run;
 

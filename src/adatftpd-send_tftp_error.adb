@@ -2,7 +2,7 @@ separate (adatftpd)
 procedure Send_TFTP_Error
   (From_Server : Anet.Sockets.Inet.UDPv4_Socket_Type;
    To_Client   : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
-   Error_Data  : Ada.Streams.Stream_Element_Array)
+   Error       : TFTP_Error_Type)
 is
 
    use type Ada.Streams.Stream_Element_Array;
@@ -10,13 +10,17 @@ is
    Null_Terminator : constant Ada.Streams.Stream_Element_Array := (1 => 0);
 
    Datagram : constant Ada.Streams.Stream_Element_Array :=
-     (From_U16_To_Bytes (16#0005#) & Error_Data & Null_Terminator);
-
-   Last_Sent : Ada.Streams.Stream_Element_Offset;
-   pragma Unreferenced (Last_Sent);
+     ((case Error is
+       when FILE_NOT_FOUND      => From_U16_To_Bytes (TFTP_FILE_NOT_FOUND),
+       when ILLEGAL_OPERATION   => From_U16_To_Bytes (TFTP_ILLEGAL_OP),
+       when UNKNOWN_TRANSFER_ID => From_U16_To_Bytes (TFTP_UNKNOWN_XFER_ID))
+      & Null_Terminator);
 
 begin
 
-   null;
+   From_Server.Send
+     (Item     => Datagram,
+      Dst_Addr => To_Client.Addr,
+      Dst_Port => To_Client.Port);
 
 end Send_TFTP_Error;

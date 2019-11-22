@@ -18,7 +18,8 @@ begin
    if Existing_Session_Found then
    --  The client reporting the error was mid-transfer.
    --  Remove the client from the Connections store.
-   --  No response is made to the client.
+   --  No response is made to the client.  Let them time-out on further
+   --  transmissions.
 
       Delete (Container => Connections, Position => Existing_Session_Cursor);
 

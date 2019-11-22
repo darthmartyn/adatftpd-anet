@@ -6,8 +6,12 @@ procedure Receive_Datagram
    Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type)
 is
 
+   --  This subprogram is called-back by Anet.Receivers.Datagram.Listen
+
    OpCode : Interfaces.Unsigned_16 :=
      From_Bytes_To_U16 (From => Item (1 .. 2));
+   --  The first two bytes of a packet determine it's type which here is
+   --  called OpCode.
 
 begin
 
@@ -32,12 +36,21 @@ begin
          Process_Client_Error
            (From_Client => Src);
 
+      when TFTP_WRQ =>
+      --   Transferring files from the the client to the server
+      --   is not supported.
+
+         Send_TFTP_Error
+           (From_Server => Server,
+            To_Client   => Src,
+            Error       => ILLEGAL_OPERATION);
+
       when others =>
 
          Send_TFTP_Error
            (From_Server => Server,
             To_Client   => Src,
-            Error_Data  => From_U16_To_Bytes (16#0004#));
+            Error       => ILLEGAL_OPERATION);
 
    end case;
 

@@ -11,8 +11,10 @@ is
    use Ada.Streams;
 
    Existing_Session : Connection_Type :=
-     (Client   => From_Client, Bytes_Sent => 0, Expected_Block_Number => 0,
-      Filename => Ada.Strings.Unbounded.To_Unbounded_String (""));
+     (Client                => From_Client,
+      Bytes_Sent            => 0,
+      Expected_Block_Number => 0,
+      Filename              => Ada.Strings.Unbounded.To_Unbounded_String (""));
 
    Existing_Session_Cursor : constant Cursor :=
       Find (Container => Connections, Item => Existing_Session);
@@ -46,8 +48,9 @@ begin
       else
 
          Send_TFTP_Error
-           (From_Server => Server, To_Client => From_Client,
-            Error_Data  => From_U16_To_Bytes (16#0004#));
+           (From_Server => Server,
+            To_Client   => From_Client,
+            Error       => UNKNOWN_TRANSFER_ID);
 
       end if;
 
