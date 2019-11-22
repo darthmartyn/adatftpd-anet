@@ -54,10 +54,9 @@ package body adatftpd is
       Server.Init;
 
       Server.Bind
-        (Address    => Anet.To_IPv4_Addr("127.0.0.1"),
-         Port       => 69,
+        (Port       => 69,
          Reuse_Addr => True);
-      
+
       Receiver.Listen
         (Callback => Receive_Datagram'Access);
 

@@ -35,7 +35,7 @@ begin
         From_U16_To_Bytes (From => Block_Number) & Data_Part;
 
       Last_Sent : Ada.Streams.Stream_Element_Offset;
-      pragma Unreferenced(Last_Sent);
+      pragma Unreferenced (Last_Sent);
 
    begin
 

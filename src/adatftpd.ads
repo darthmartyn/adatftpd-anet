@@ -25,7 +25,7 @@ private
    end record;
 
    function "=" (L, R : Connection_Type) return Boolean is
-      (Anet.Sockets.Inet."=" (L.Client,R.Client));
+      (Anet.Sockets.Inet."=" (L.Client, R.Client));
 
    package Connection_Store is new
      Ada.Containers.Doubly_Linked_Lists (Connection_Type, "=");
@@ -105,7 +105,6 @@ private
                        and then
                        (Bytes_Sent in Bytes_Sent'Old .. Bytes_Sent'Old + 512));
 
-
    procedure Send_TFTP_Error
      (From_Server : Anet.Sockets.Inet.UDPv4_Socket_Type;
       To_Client   : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
@@ -123,5 +122,9 @@ private
      (To_Server   : Anet.Sockets.Inet.UDPv4_Socket_Type;
       From_Client : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
       Data        : Ada.Streams.Stream_Element_Array);
+
+   procedure Receive_Datagram
+     (Item : Ada.Streams.Stream_Element_Array;
+      Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type);
 
 end adatftpd;
