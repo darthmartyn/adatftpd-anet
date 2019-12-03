@@ -9,6 +9,10 @@ is
 
    procedure Process_Datagram
      (Item : Ada.Streams.Stream_Element_Array;
+      Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type);
+
+   procedure Process_Datagram
+     (Item : Ada.Streams.Stream_Element_Array;
       Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type)
    is
 
@@ -33,17 +37,17 @@ is
 
             if Item'Length > 3 then
 
-                Process_RRQ
-                  (To_Server   => Server,
-                   From_Client => Src,
-                   Data        => Item (Third_Byte .. Item'Last));
+               Process_RRQ
+                 (To_Server   => Server,
+                  From_Client => Src,
+                  Data        => Item (Third_Byte .. Item'Last));
 
             else
 
-                Send_TFTP_Error
-                 (From_Server => Server,
-                  To_Client   => Src,
-                  Error       => ILLEGAL_OPERATION);
+               Send_TFTP_Error
+                (From_Server => Server,
+                 To_Client   => Src,
+                 Error       => ILLEGAL_OPERATION);
 
             end if;
 
@@ -51,10 +55,10 @@ is
 
             if Item'Length > 3 then
 
-                Process_ACK
-                  (To_Server   => Server,
-                   From_Client => Src,
-                   Data        => Item (Third_Byte .. Item'Last));
+               Process_ACK
+                 (To_Server   => Server,
+                  From_Client => Src,
+                  Data        => Item (Third_Byte .. Item'Last));
 
             else
 
