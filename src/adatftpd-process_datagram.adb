@@ -14,8 +14,7 @@ is
 begin
 
    if (OpCode = TFTP_ACK or else OpCode = TFTP_RRQ) and then
-       Item'Length > 3 and then
-       (Item'First <= Item'Last - 2)
+       Item'Length > 3
    then
 
       if OpCode = TFTP_ACK then
