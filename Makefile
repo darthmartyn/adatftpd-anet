@@ -7,5 +7,8 @@ all:
 check:
 	gnatcheck -P adatftpd.gpr --show-rule -rules -from=gnatcheck.rules
 	
+review:
+	codepeer -P adatftpd.gpr -level 2 -output-msg
+	
 clean:
 	gprclean -q -P adatftpd.gpr
