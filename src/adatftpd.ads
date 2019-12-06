@@ -61,6 +61,7 @@ private
    use Byte_IO;
    use Interfaces;
    use Connection_Store;
+   use Ada.Streams;
 
    --  Private Varaibles
 
@@ -132,6 +133,11 @@ private
      (To_Server   : Anet.Sockets.Inet.UDPv4_Socket_Type;
       From_Client : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
       Data        : Ada.Streams.Stream_Element_Array);
+
+   procedure Process_Datagram
+     (Item : Ada.Streams.Stream_Element_Array;
+      Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type) with
+        Pre => Item'Length > 1;
 
    procedure Receive_Datagram
      (Item : Ada.Streams.Stream_Element_Array;

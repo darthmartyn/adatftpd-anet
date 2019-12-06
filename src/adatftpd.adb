@@ -46,6 +46,10 @@ package body adatftpd is
       From_Client : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
       Data        : Ada.Streams.Stream_Element_Array) is separate;
 
+   procedure Process_Datagram
+     (Item : Ada.Streams.Stream_Element_Array;
+      Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type) is separate;
+
    procedure Receive_Datagram
      (Item : Ada.Streams.Stream_Element_Array;
       Src  : Anet.Sockets.Inet.IPv4_Sockaddr_Type) is separate;
