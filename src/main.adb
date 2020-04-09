@@ -1,6 +1,6 @@
 with adatftpd;
 
-procedure Main is
+procedure Main with SPARK_Mode is
 begin
 
    adatftpd.Run;

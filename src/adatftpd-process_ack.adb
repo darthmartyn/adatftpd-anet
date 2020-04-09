@@ -7,9 +7,6 @@ procedure Process_ACK
    Data        : Ada.Streams.Stream_Element_Array)
 is
 
-   use Interfaces;
-   use Ada.Streams;
-
    Existing_Session : Connection_Type :=
      (Client                => From_Client,
       Bytes_Sent            => 0,
@@ -30,7 +27,9 @@ begin
    if Existing_Session_Found then
 
       Existing_Session :=
-        Element (Position => Existing_Session_Cursor);
+        Element
+          (Container => Connections,
+           Position  => Existing_Session_Cursor);
 
       if ACK_Block_Number = Existing_Session.Expected_Block_Number then
 

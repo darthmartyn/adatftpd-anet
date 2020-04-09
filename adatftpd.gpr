@@ -16,4 +16,8 @@ project Adatftpd is
       for Switches ("ada") use ("-gnata");
    end Compiler;
 
+   package Check is
+      for Default_Switches ("ada") use ("-rules", "-from=gnatcheck.rules");
+   end Check;
+
 end Adatftpd;

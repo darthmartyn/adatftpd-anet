@@ -49,7 +49,7 @@ begin
                  Ada.Strings.Unbounded.To_Unbounded_String (Filename_String));
 
             Previous_Session : constant Cursor :=
-              Connections.Find (Item => New_Session);
+              Find (Container => Connections, Item => New_Session);
 
             Previous_Session_Found : constant Boolean :=
               (Previous_Session /= No_Element);
@@ -58,14 +58,16 @@ begin
 
             if Previous_Session_Found then
 
-               Connections.Replace_Element
-                 (Position  => Previous_Session,
+               Replace_Element
+                 (Container => Connections,
+                  Position  => Previous_Session,
                   New_Item  => New_Session);
 
             else
 
-               Connections.Append
-                 (New_Item  => New_Session);
+               Append
+                 (Container => Connections,
+                  New_Item  => New_Session);
 
             end if;
 

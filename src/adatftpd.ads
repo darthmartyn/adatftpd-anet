@@ -1,21 +1,19 @@
-with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Containers.Formal_Doubly_Linked_Lists;
 with Ada.Direct_IO;
 with Ada.Streams;
 with Ada.Strings.Unbounded;
 with Anet;
 with Anet.Receivers.Datagram;
 with Anet.Sockets.Inet;
+with Byte_IO;
 with Interfaces;
+with Unix_UDP_Receiver;
 
 package adatftpd is
 
    procedure Run;
 
 private
-
-   package Byte_IO is new Ada.Direct_IO
-     (Element_Type => Ada.Streams.Stream_Element);
-   --   Used to read and write bytes from files
 
    type Connection_Type is record
       Client                : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
@@ -28,7 +26,7 @@ private
       (Anet.Sockets.Inet."=" (L.Client, R.Client));
 
    package Connection_Store is new
-     Ada.Containers.Doubly_Linked_Lists (Connection_Type, "=");
+     Ada.Containers.Formal_Doubly_Linked_Lists (Connection_Type, "=");
    --  It is useful to keep track of current transfers because
    --  datagrams can arrive from different clients.  Elements are added
    --  to this list upon receipt of a valid RRQ datagram and removed
@@ -49,13 +47,6 @@ private
    type TFTP_Error_Type is
      (FILE_NOT_FOUND, ILLEGAL_OPERATION, UNKNOWN_TRANSFER_ID);
 
-   --  Private Packages
-
-   package Unix_UDP_Receiver is new Anet.Receivers.Datagram
-     (Socket_Type  => Anet.Sockets.Inet.UDPv4_Socket_Type,
-      Address_Type => Anet.Sockets.Inet.IPv4_Sockaddr_Type,
-      Receive      => Anet.Sockets.Inet.Receive);
-
    --  Private use clauses
 
    use Byte_IO;
@@ -69,7 +60,7 @@ private
 
    Receiver : Unix_UDP_Receiver.Receiver_Type (S => Server'Access);
 
-   Connections : Connection_Store.List;
+   Connections : Connection_Store.List (Capacity => 50);
 
    --  Private Subprograms
 
