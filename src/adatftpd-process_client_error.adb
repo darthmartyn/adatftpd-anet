@@ -4,8 +4,11 @@ procedure Process_Client_Error
 is
 
    Existing_Session : Connection_Type :=
-     (Client   => From_Client, Bytes_Sent => 0, Expected_Block_Number => 0,
-      Filename => Ada.Strings.Unbounded.To_Unbounded_String (""));
+     (Client                => From_Client,
+      Bytes_Sent            => 0,
+      File_Size             => 0,
+      Expected_Block_Number => 0,
+      Filename              => Ada.Strings.Unbounded.To_Unbounded_String (""));
 
    Existing_Session_Cursor : Cursor :=
      Find (Container => Connections, Item => Existing_Session);

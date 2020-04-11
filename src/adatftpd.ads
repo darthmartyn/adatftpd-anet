@@ -1,5 +1,6 @@
-with Ada.Containers.Formal_Doubly_Linked_Lists;
+with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Direct_IO;
+with Ada.Directories;
 with Ada.Streams;
 with Ada.Strings.Unbounded;
 with Anet;
@@ -18,6 +19,7 @@ private
    type Connection_Type is record
       Client                : Anet.Sockets.Inet.IPv4_Sockaddr_Type;
       Bytes_Sent            : Byte_IO.Count;
+      File_Size             : Byte_IO.Count;
       Expected_Block_Number : Interfaces.Unsigned_16;
       Filename              : Ada.Strings.Unbounded.Unbounded_String;
    end record;
@@ -26,7 +28,7 @@ private
       (Anet.Sockets.Inet."=" (L.Client, R.Client));
 
    package Connection_Store is new
-     Ada.Containers.Formal_Doubly_Linked_Lists (Connection_Type, "=");
+     Ada.Containers.Doubly_Linked_Lists (Connection_Type, "=");
    --  It is useful to keep track of current transfers because
    --  datagrams can arrive from different clients.  Elements are added
    --  to this list upon receipt of a valid RRQ datagram and removed
@@ -60,7 +62,7 @@ private
 
    Receiver : Unix_UDP_Receiver.Receiver_Type (S => Server'Access);
 
-   Connections : Connection_Store.List (Capacity => 50);
+   Connections : Connection_Store.List;
 
    --  Private Subprograms
 

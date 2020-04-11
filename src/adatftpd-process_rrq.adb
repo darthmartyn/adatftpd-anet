@@ -31,19 +31,24 @@ begin
 
          Block_Number : Interfaces.Unsigned_16 := 0;
          Bytes_Sent   : Byte_IO.Count          := 0;
+         File_Size    : Byte_IO.Count :=
+           Byte_IO.Count (Ada.Directories.Size (Name => Filename_String));
 
       begin
 
          Send_TFTP_Data_Block
-           (From_Server => Server, To_Client => From_Client,
-            Filename    => Filename_String, Block_Number => Block_Number,
-            Bytes_Sent  => Bytes_Sent);
+           (From_Server  => Server,
+            To_Client    => From_Client,
+            Filename     => Filename_String,
+            Block_Number => Block_Number,
+            Bytes_Sent   => Bytes_Sent);
 
          declare
 
             New_Session : constant Connection_Type :=
               (Client                => From_Client,
                Bytes_Sent            => Bytes_Sent,
+               File_Size             => File_Size,
                Expected_Block_Number => Block_Number,
                Filename              =>
                  Ada.Strings.Unbounded.To_Unbounded_String (Filename_String));

@@ -10,10 +10,11 @@ is
    Existing_Session : Connection_Type :=
      (Client                => From_Client,
       Bytes_Sent            => 0,
+      File_Size             => 0,
       Expected_Block_Number => 0,
       Filename              => Ada.Strings.Unbounded.To_Unbounded_String (""));
 
-   Existing_Session_Cursor : constant Cursor :=
+   Existing_Session_Cursor : Cursor :=
       Find (Container => Connections, Item => Existing_Session);
 
    Existing_Session_Found : constant Boolean :=
@@ -26,10 +27,7 @@ begin
 
    if Existing_Session_Found then
 
-      Existing_Session :=
-        Element
-          (Container => Connections,
-           Position  => Existing_Session_Cursor);
+      Existing_Session := Element (Position  => Existing_Session_Cursor);
 
       if ACK_Block_Number = Existing_Session.Expected_Block_Number then
 
@@ -40,9 +38,21 @@ begin
             Block_Number => Existing_Session.Expected_Block_Number,
             Bytes_Sent   => Existing_Session.Bytes_Sent);
 
-         Replace_Element
-           (Container => Connections, Position => Existing_Session_Cursor,
-            New_Item  => Existing_Session);
+         if Existing_Session.Bytes_Sent = Existing_Session.File_Size then
+
+            Delete
+              (Container => Connections,
+               Position  => Existing_Session_Cursor,
+               Count     => 1);
+
+         else
+
+            Replace_Element
+              (Container => Connections,
+               Position  => Existing_Session_Cursor,
+               New_Item  => Existing_Session);
+
+         end if;
 
       else
 
